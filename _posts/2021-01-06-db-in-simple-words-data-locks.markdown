@@ -4,17 +4,17 @@ title: "Databases in simple words: Data Locks"
 date: 2021-01-06 20:00:00 +0100
 categories: databases
 excerpt: >-
-  When you work with data from multiple connections you need to manage access to the data.
-  One of the possible approaches is data locks. Let's check what is it.
+  When you work with data from multiple connections, you need to manage access to the data.
+  One of the possible approaches is data locks. Let's check it.
 ---
 
-When you work with data, usually you would like to have possibility to read/modify data from  multiple connections (so called in concurrent mode). Apart of that we would like to avoid data corruption and inconsistency.
+When you work with data, usually you would like to have a possibility to read/modify data from multiple connections (so-called in concurrent mode). Apart from that, we would like to avoid data corruption and inconsistency.
 
-To achieve what we need there is a number of approaches in the area **Concurrency Control**. One of them called **Database Locking**. Let's check what is it. In simple words.
+To achieve what we need there is a number of approaches in the area of **Concurrency Control**. One of them is called **Database Locking**. Let’s check it. In simple words.
 
-### Database Locking in Concurrency Control
+### Database Locking of Concurrency Control
 
-Let's say we have a database (SQL, noSQL... it doesn't really matters), and we have multiple connections which are trying to read data from or write to the database.
+Let's say we have a database (SQL, NoSQL... it doesn't really matters), and we have multiple connections that are trying to read data from or write to the database.
 
 {%
     include image.html
@@ -22,17 +22,17 @@ Let's say we have a database (SQL, noSQL... it doesn't really matters), and we h
     alt='Explicit lock'
 %}
 
-**Write 1** is updating a part of data. Soon after **Write 1** has been started, **Write 2** came with a wish to update the same data. Also both reads wants to include that data in the response. Our database doesn't want to have any conflicts between first and second write. Also it would be nice to include the last version of the data in the read. So write acquires a lock for that part of data and blocks other clients from accessing it. That lock called Exclusive Lock and blocks everything else. Next write and reads will wait in a queue till the first write will complete.
+**Write 1** is updating a part of the data. Soon after **Write 1** has been started, **Write 2** came with a wish to update the same data. Also, both reads want to include that data in the response. Our database doesn't want to have any conflicts between the first and second write. Also, it would be nice to include the last version of the data in the read. So write acquires a lock for that part of data and blocks other clients from accessing it. That lock is called Exclusive Lock and blocks everything else. Next write and reads will wait in a queue till the first write will complete.
 
-> **Exclusive (write) lock** prevents the resource from being shared. All clients who is trying to access the resource will wait for lock to be released.
+> **Exclusive (write) lock** prevents the resource from being shared. All clients who are trying to access the resource will wait for a lock to be released.
 
-By *write* usually means insert, update and delete operations.
+*Write* usually means insert, update and delete operations.
 
-Once **Write 1** will be executed, **Read 1** gonna kick in. It would be not nice if somebody will modify part of data accessed by read. It can lead to inconsistency of data and corrupted result. So it is better if read will acquire a lock as well. But read doesn't need such exclusivity as write. There is no harm if another read will access the same data. So Read 1 acquires a shared lock.
+Once **Write 1** will be executed, **Read 1** gonna kick in. It would be not nice if somebody will modify part of the data accessed by reading. It can lead to inconsistency of data and corrupted results. So it is better if a read will acquire a lock as well. But reading doesn't need such exclusivity as writing. There is no harm if another read will access the same data. So Read 1 acquires a shared lock.
 
-> **Shared (read) lock** prevents the resource from being modified. Other reads can share a lock and work in parallel, but writes need to wait for lock to be released.
+> **Shared (read) lock** prevents the resource from being modified. Other reads can share a lock and work in parallel but writes need to wait for a lock to be released.
 
-Reads and writes could have different complexity and scale. Some may require to lock not only row or document, but entire table, collection or even database. For example, in scope of one transaction **Write 1** needs to modify data in a few places.
+Reads and writes could have different complexity and scale. Some may require to lock not only a row or document but the entire table, collection, or even a database. For example, in the scope of one transaction **Write 1** needs to modify data in a few places.
 
 {%
     include image.html
@@ -40,9 +40,9 @@ Reads and writes could have different complexity and scale. Some may require to 
     alt='Explicit lock'
 %}
 
-During acquiring the exclusive lock for first part, **Write 2** can get lock for second part. Eventually it can lead to a dead lock. To prevent that situation **Write 1** can obtain exclusive lock for entire collection and modify all needed data. It is very heavy lock, and will block all reads from collection. To avoid it and unblock reads, **Write 1** can obtain an intent for exclusive lock on a collection.
+During acquiring the exclusive lock for the first part, **Write 2** can get a lock for the second part. Eventually, it can lead to deadlock. To prevent that situation **Write 1** can obtain an exclusive lock for the entire collection and modify all needed data. It is a very heavy lock and will block all reads from the collection. To avoid it and unblock reads, **Write 1** can obtain an intent for exclusive lock on a collection.
 
-> **Intent Exclusive lock** prevents any nested resource from being exclusively locked. Other writes cannot acquire exclusive lock for any nested data.
+> **Intent Exclusive lock** prevents any nested resource from being an exclusively locked. Other writes cannot acquire exclusive lock for any nested data.
 
 Lover level of a lock, lighter it is. Higher level, heavier lock.
 
