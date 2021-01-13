@@ -1,12 +1,21 @@
 ---
 layout: post
 title: "Databases in simple words: Data Locks"
-date: 2021-01-06 20:00:00 +0100
+date: 2021-01-08 20:00:00 +0100
 categories: databases
 excerpt: >-
   When you work with data from multiple connections, you need to manage access to the data.
   One of the possible approaches is data locks. Let's check it.
 ---
+{%
+    include image-ref.html
+    file='20210108/cover.jpg'
+    alt='Explicit lock'
+    authorUrl='https://unsplash.com/@matt__feeney'
+    authorName='Matthew Feeney'
+    siteUrl='https://unsplash.com/photos/Nwkh-n6l25w'
+    siteName='Unsplash'
+%}
 
 When you work with data, usually you would like to have a possibility to read/modify data from multiple connections (so-called in concurrent mode). Apart from that, we would like to avoid data corruption and inconsistency.
 
@@ -18,7 +27,7 @@ Let's say we have a database (SQL, NoSQL... it doesn't really matters), and we h
 
 {%
     include image.html
-    file='20210108/01-simple-lock.svg'
+    file='20210108/01-simple-lock.png'
     alt='Explicit lock'
 %}
 
@@ -36,14 +45,14 @@ Reads and writes could have different complexity and scale. Some may require to 
 
 {%
     include image.html
-    file='20210108/02-intent-lock.svg'
+    file='20210108/02-intent-lock.png'
     alt='Explicit lock'
 %}
 
-During acquiring the exclusive lock for the first part, **Write 2** can get a lock for the second part. Eventually, it can lead to deadlock. To prevent that situation **Write 1** can obtain an exclusive lock for the entire collection and modify all needed data. It is a very heavy lock and will block all reads from the collection. To avoid it and unblock reads, **Write 1** can obtain an intent for exclusive lock on a collection.
+While **Write 1** will be working on acquiring the exclusive lock for the first part, **Write 2** can get a lock for the second. Eventually, it can lead to the deadlock. To prevent that situation **Write 1** can obtain an exclusive lock for the entire collection and modify all needed data. It is a very heavy lock and will block all reads from the collection. To avoid it and unblock at least reads, **Write 1** can obtain an intent for exclusive lock on a collection.
 
 > **Intent Exclusive lock** prevents any nested resource from being an exclusively locked. Other writes cannot acquire exclusive lock for any nested data.
 
-Lover level of a lock, lighter it is. Higher level, heavier lock.
+Lover level of a lock, lighter it is. Higher level, more clients are waiting in a queue and lock is heavier.
 
-Having locks in place ensures all ACID principles. It is safe to work with such data. But it is hard to provide a good performance and scale of data. Locks can be implemented in different databases a bit differently. You also can meet others, like update lock and intent to read.
+Having locks in place ensures all ACID principles. It is safe to work with data in that way. But it is hard to provide a good performance and scale of data. Locks can be implemented in different databases a bit differently. You also can meet other, like update lock and intent to read.
