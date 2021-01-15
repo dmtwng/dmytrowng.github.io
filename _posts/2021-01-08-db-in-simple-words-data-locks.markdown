@@ -56,3 +56,13 @@ While **Write 1** will be working on acquiring the exclusive lock for the first 
 Lover level of a lock, lighter it is. Higher level, more clients are waiting in a queue and lock is heavier.
 
 Having locks in place ensures all ACID principles. It is safe to work with data in that way. But it is hard to provide a good performance and scale of data. Locks can be implemented in different databases a bit differently. You also can meet other, like update lock and intent to read.
+
+### Where DB locks are used
+
+Database locking is used for concurrency control in many databases. The typical example is MySQL. It is used in InnoDB to lock data on the [row level](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html#innodb-shared-exclusive-locks), [index record](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html#innodb-record-locks), and others. If you're inserting a new row with an auto-increment column it will [lock the entire table](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html#innodb-auto-inc-locks).
+
+PostgreSQL implemented the possibility to use [Multi Version and Locking Concurrency Control](https://www.postgresql.org/docs/9.1/mvcc-intro.html). Similarly as in InnoDB, [table and row level locks](https://www.postgresql.org/docs/9.1/explicit-locking.html) are possible.
+
+In Neo4j locking is used [on the nodes and relationships](https://www.postgresql.org/docs/9.1/mvcc-intro.html).
+
+The locking mechanism is not too good from a performance perspective. But it provides the highest transaction isolation level which could be necessary for domains like financial.
