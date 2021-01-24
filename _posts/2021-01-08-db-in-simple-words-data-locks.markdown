@@ -10,7 +10,6 @@ excerpt: >-
 {%
     include image-ref.html
     file='20210108/cover.jpg'
-    alt='Explicit lock'
     authorUrl='https://unsplash.com/@matt__feeney'
     authorName='Matthew Feeney'
     siteUrl='https://unsplash.com/photos/Nwkh-n6l25w'
@@ -63,6 +62,6 @@ Database locking is used for concurrency control in many databases. The typical 
 
 PostgreSQL implemented the possibility to use [Multi Version and Locking Concurrency Control](https://www.postgresql.org/docs/9.1/mvcc-intro.html). Similarly as in InnoDB, [table and row level locks](https://www.postgresql.org/docs/9.1/explicit-locking.html) are possible.
 
-In Neo4j locking is used [on the nodes and relationships](https://www.postgresql.org/docs/9.1/mvcc-intro.html).
+In Neo4j locking is used [on the nodes and relationships](https://neo4j.com/developer/kb/shared-vs-exclusive-transaction-locks/).
 
 The locking mechanism is not too good from a performance perspective. But it provides the highest transaction isolation level which could be necessary for domains like financial.
